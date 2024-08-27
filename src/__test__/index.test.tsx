@@ -1,7 +1,8 @@
 import React from 'react';
-import renderer from 'react-test-renderer';
 import {QRCodeSVG, QRCodeCanvas} from '..';
 import {describe, expect, test} from '@jest/globals';
+import {render} from '@testing-library/react';
+import '@testing-library/jest-dom';
 
 import type {ComponentPropsWithoutRef} from 'react';
 
@@ -90,35 +91,43 @@ const TEST_CONFIGS: PartialQRProps[] = [
       };
     }
   ),
+  // Data URI. Make sure it's possible. This will also be the only case where
+  // the embedded image is in the snapshot.
+  {
+    imageSettings: {
+      ...BASE_IMAGE_SETTINGS,
+      // 24x24 red PNG
+      src: 'data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABgAAAAYCAYAAADgdz34AAAAAXNSR0IArs4c6QAAADVJREFUSEvt0rEJAAAMAkHdf+hkhK9S5a0F4bCTTA5TB0hXIhKKRBKhABZ8kUQogAVf9IBoAYUiL+kU3konAAAAAElFTkSuQmCC',
+    },
+  },
 ];
 
 describe('SVG rendering', () => {
   test('renders basic SVG correctly', () => {
-    const tree = renderer.create(<QRCodeSVG {...BASIC_PROPS} />).toJSON();
-    expect(tree).toMatchSnapshot();
+    const {container} = render(<QRCodeSVG {...BASIC_PROPS} />);
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test.each(TEST_CONFIGS)('renders SVG variation (%o) correctly', (config) => {
-    const tree = renderer
-      .create(<QRCodeSVG {...BASIC_PROPS} {...config} />)
-      .toJSON();
-    expect(tree).toMatchSnapshot();
+    const {container} = render(<QRCodeSVG {...BASIC_PROPS} {...config} />);
+    expect(container.firstChild).toMatchSnapshot();
   });
 });
 
 describe('Canvas rendering', () => {
   test('renders basic Canvas correctly', () => {
-    const tree = renderer.create(<QRCodeCanvas {...BASIC_PROPS} />).toJSON();
-    expect(tree).toMatchSnapshot();
+    const {container} = render(<QRCodeCanvas {...BASIC_PROPS} />);
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test.each(TEST_CONFIGS)(
     'renders Canvas variation (%o) correctly',
     (config) => {
-      const tree = renderer
-        .create(<QRCodeCanvas {...BASIC_PROPS} {...config} />)
-        .toJSON();
-      expect(tree).toMatchSnapshot();
+      const {container} = render(<QRCodeCanvas {...BASIC_PROPS} {...config} />);
+      // Some of these render an embedded image. Internally that results in
+      // rendering an additional DOM node (<img>). We should make sure that's
+      // there.
+      expect(Array.from(container.children)).toMatchSnapshot();
     }
   );
 });
@@ -149,16 +158,12 @@ describe('Display Names set', () => {
 describe('`style` is passed to rendered nodes and merged correctly', () => {
   const style = {height: 100};
   test('QRCodeSVG', () => {
-    const tree = renderer
-      .create(<QRCodeSVG {...BASIC_PROPS} style={style} />)
-      .toJSON();
-    expect(tree).toMatchSnapshot();
+    const {container} = render(<QRCodeSVG {...BASIC_PROPS} style={style} />);
+    expect(container.firstChild).toMatchSnapshot();
   });
 
   test('QRCodeCanvas', () => {
-    const tree = renderer
-      .create(<QRCodeCanvas {...BASIC_PROPS} style={style} />)
-      .toJSON();
-    expect(tree).toMatchSnapshot();
+    const {container} = render(<QRCodeCanvas {...BASIC_PROPS} style={style} />);
+    expect(container.firstChild).toMatchSnapshot();
   });
 });
