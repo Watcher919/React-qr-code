@@ -1,3 +1,9 @@
+## [4.0.1] - 2024-08-28
+
+### Fixed
+- Corrected issue with loading types in Typescript when configured with `"moduleResolution": "Bundler"` or `"module": "ESNext"`. (#368)
+
+
 ## [4.0.0] - 2024-08-27
 
 ### Added
@@ -12,7 +18,7 @@
 
 - Improved accessibility for `QRCodeSVG` by rendering a `<title>` node instead of setting a `title` attribute. (#284)
 - Improved accessibility with explicit `role` set on rendered SVG and Canvas. (#321)
-- Improved documentation (###)
+- Improved documentation (#358)
 - Used better types in TypeScript for ErrorCorrectionLevel, resulting in better developer experience. (#291)
 
 ### Deprecated
