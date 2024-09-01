@@ -1,3 +1,13 @@
+## [3.2.0] - 2024-08-31
+
+### Fixed
+- Improved support for dual publishing of ESM/CJS modules for better compatibility with tools. (#301, #368)
+- Mitigated warnings when using QRCodeSVG in server components (#352)
+
+### Changed
+- Added `@deprecated` JSDoc to default export for additional visibility in editors to TypeScript users.
+
+
 ## [4.0.1] - 2024-08-28
 
 ### Fixed
